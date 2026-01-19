@@ -70,62 +70,6 @@ function initCountdownTimer() {
 }
 
 /*
- * Initialize the RSVP form submission and handle Google Apps Script integration.
- */
-function initFormSubmit() {
-  document.querySelectorAll('form').forEach(form => {
-    setTimeout(() => {
-      form.querySelector("#Date").valueAsDate = new Date()
-    }, 1000);
-
-    if (!form) return;
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const messageElement = form.querySelector("#message");
-      const submitButton = form.querySelector("#submit-button");
-
-      messageElement.textContent = "Đang gửi..";
-      messageElement.style.display = "block";
-      submitButton.disabled = true;
-
-      const formData = new FormData(this);
-      const formDataString = new URLSearchParams(formData).toString();
-
-      fetch("https://script.google.com/macros/s/AKfycbyoPo3GoC8rbO66Pdhl9TdTfpo2ptB9JpMWJktSbPuxm2yfs0ijNtvVty_NSuk_y1VeDQ/exec", {
-        method: "POST",
-        body: formDataString,
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
-      })
-        .then(response => response.text())
-        .then(data => {
-          if (form.classList.contains("gui-loi-chuc")) {
-            messageElement.textContent = "Gửi lời chúc thành công!";
-          } else {
-            messageElement.textContent = "Gửi xác nhận tham dự thành công!";
-            localStorage.setItem("rsvpSubmitted", "true");
-          }
-          messageElement.style.backgroundColor = "green";
-          messageElement.style.color = "beige";
-          form.reset();
-          setTimeout(() => {
-            form.querySelector("#Date").valueAsDate = new Date()
-          }, 1000);
-          setTimeout(() => messageElement.style.display = "none", 2000);
-          submitButton.disabled = false;
-        })
-        .catch(error => {
-          console.error("Error:", error);
-          messageElement.textContent = "Có lỗi xảy ra. Vui lòng reload lại trang và thử lại!";
-          setTimeout(() => messageElement.style.display = "none", 2000);
-          submitButton.disabled = false;
-        });
-    });
-  })
-}
-
-/*
  * Reset the RSVP form.
  */
 function resetForm() {
@@ -219,7 +163,6 @@ function isFacebookApp() {
 document.addEventListener("DOMContentLoaded", () => {
   applyAnimationOnLoad();
   initCountdownTimer();
-  initFormSubmit();
   resetForm();
   initBackgroundSlider();
   // initRecurringPopup();
