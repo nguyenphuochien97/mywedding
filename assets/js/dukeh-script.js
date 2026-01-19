@@ -75,67 +75,31 @@ function initCountdownTimer() {
 function initFormSubmit() {
   document.querySelectorAll('form').forEach(form => {
     setTimeout(() => {
-      const dateInput = form.querySelector("#Date");
-      if (dateInput) dateInput.valueAsDate = new Date();
+      form.querySelector("#Date").valueAsDate = new Date()
     }, 1000);
 
     if (!form) return;
 
-    form.addEventListener("submit", async function (e) {
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
 
       const messageElement = form.querySelector("#message");
       const submitButton = form.querySelector("#submit-button");
 
-      if (!messageElement || !submitButton) return;
-
       messageElement.textContent = "Đang gửi..";
       messageElement.style.display = "block";
-      messageElement.style.backgroundColor = "";
-      messageElement.style.color = "";
       submitButton.disabled = true;
 
-      // Collect the necessary data (make sure elements exist)
-      const nameInput = form.querySelector('[name="name"]');
-      const emailInput = form.querySelector('[name="email"]');
-      const messageInput = form.querySelector('[name="message"]');
-      const name = nameInput ? nameInput.value : '';
-      const email = emailInput ? emailInput.value : '';
-      const message = messageInput ? messageInput.value : '';
+      const formData = new FormData(this);
+      const formDataString = new URLSearchParams(formData).toString();
 
-      // Prepare payload as JSON string
-      const payload = JSON.stringify({
-        name,
-        email,
-        message
-      });
-
-      try {
-        const response = await fetch(
-          "https://script.google.com/macros/s/AKfycbyoPo3GoC8rbO66Pdhl9TdTfpo2ptB9JpMWJktSbPuxm2yfs0ijNtvVty_NSuk_y1VeDQ/exec",
-          {
-            method: "POST",
-            body: payload,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        // Google Apps Script sometimes returns HTML error pages (non-2xx status)
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        let data;
-        try {
-          data = await response.json();
-        } catch (jsonErr) {
-          // Could not parse JSON: likely a Google Apps Script error page (HTML/text response)
-          throw new Error("Không kết nối được tới máy chủ Google Apps Script. Hãy kiểm tra lại URL hoặc cấu hình.");
-        }
-
-        if (data && data.success) {
+      fetch("https://script.google.com/macros/s/AKfycbyoPo3GoC8rbO66Pdhl9TdTfpo2ptB9JpMWJktSbPuxm2yfs0ijNtvVty_NSuk_y1VeDQ/exec", {
+        method: "POST",
+        body: formDataString,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      })
+        .then(response => response.text())
+        .then(data => {
           if (form.classList.contains("gui-loi-chuc")) {
             messageElement.textContent = "Gửi lời chúc thành công!";
           } else {
@@ -146,38 +110,19 @@ function initFormSubmit() {
           messageElement.style.color = "beige";
           form.reset();
           setTimeout(() => {
-            const dateInput = form.querySelector("#Date");
-            if (dateInput) dateInput.valueAsDate = new Date();
+            form.querySelector("#Date").valueAsDate = new Date()
           }, 1000);
-          setTimeout(() => { messageElement.style.display = "none" }, 2000);
+          setTimeout(() => messageElement.style.display = "none", 2000);
           submitButton.disabled = false;
-        } else {
-          // Show error returned by backend if any
-          let backendMsg = (data && data.error) ? data.error : "Server error";
-          messageElement.textContent = "Có lỗi từ máy chủ: " + backendMsg;
-          messageElement.style.backgroundColor = "#ad3131";
-          messageElement.style.color = "#fff";
-          setTimeout(() => messageElement.style.display = "none", 2500);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          messageElement.textContent = "Có lỗi xảy ra. Vui lòng reload lại trang và thử lại!";
+          setTimeout(() => messageElement.style.display = "none", 2000);
           submitButton.disabled = false;
-        }
-      } catch (error) {
-        console.error("Error during RSVP form submit:", error);
-        if (error && error.message && error.message.includes("Google Apps Script")) {
-          messageElement.textContent = "Có lỗi kết nối đến hệ thống xác nhận (Google Apps Script). Vui lòng thử lại sau!";
-        } else if (error && error.message && error.message.startsWith("HTTP error")) {
-          messageElement.textContent = "Không thể gửi dữ liệu do lỗi máy chủ (" + error.message + ").";
-        } else if (error && error.message) {
-          messageElement.textContent = "Lỗi: " + error.message;
-        } else {
-          messageElement.textContent = "Có lỗi không xác định. Vui lòng reload lại trang và thử lại!";
-        }
-        messageElement.style.backgroundColor = "#ad3131";
-        messageElement.style.color = "#fff";
-        setTimeout(() => messageElement.style.display = "none", 2500);
-        submitButton.disabled = false;
-      }
+        });
     });
-  });
+  })
 }
 
 /*

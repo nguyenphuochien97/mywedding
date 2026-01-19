@@ -2641,6 +2641,23 @@ img.lazy.loaded {
   }
 }
 
+.dukeh-section-6 .headline {
+  line-height: 1.3;
+  font-size: 50px;
+  font-family: "Playfair Display", serif !important;
+  font-weight: 700;
+}
+@media (max-width: 768.98px) {
+  .dukeh-section-6 .headline {
+    font-size: 20px;
+  }
+}
+.dukeh-section-6 .paragraph {
+  font-size: 16px;
+  font-family: "Rokkitt", serif;
+  line-height: 1.6;
+}
+
 .dukeh-section-6 {
   position: relative;
   padding-top: 50px;
@@ -2880,6 +2897,7 @@ img.lazy.loaded {
 }
 
 .dukeh-section-7 {
+  overflow: hidden;
   position: relative;
   min-height: 100vh;
 }
@@ -3463,6 +3481,36 @@ body.modal-open {
 @media (max-width: 768.98px) {
   .dukeh-section-8 .dukeh-btn span {
     font-size: 16px !important;
+  }
+}
+
+.dukeh-section-8 .youtube-video-container {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+}
+.dukeh-section-8 .youtube-video-container iframe {
+  width: 100%;
+  height: 600px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 575.98px) {
+  .dukeh-section-8 .youtube-video-container iframe {
+    height: 250px;
+  }
+}
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .dukeh-section-8 .youtube-video-container iframe {
+    height: 400px;
+  }
+}
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .dukeh-section-8 .youtube-video-container iframe {
+    height: 500px;
   }
 }
 
