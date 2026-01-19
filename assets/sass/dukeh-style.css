@@ -2136,17 +2136,6 @@ img.lazy.loaded {
   transition: 0.3s ease all;
   border: 3px solid var(--color-1);
 }
-.dukeh-section-3 .tab-indicator {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background-color: var(--color-1);
-  z-index: 0;
-  transition: 0.3s ease-out all;
-  border-radius: 0;
-}
 .dukeh-section-3 .nav-link {
   display: inline-block;
   background: none;
@@ -2171,6 +2160,7 @@ img.lazy.loaded {
 }
 .dukeh-section-3 .nav-link.active {
   color: #ffffff;
+  background-color: var(--color-1) !important;
 }
 .dukeh-section-3 .wpo-contact-section {
   position: absolute;
